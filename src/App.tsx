@@ -1,24 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
 
+interface Todo {
+  id: number;
+  text: string;
+}
+
 function App() {
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [newTodo, setNewToDo] = useState<string>("");
+
+  const addTodo = () => {
+    if (newTodo.trim() !== "") {
+      const todo: Todo = {
+        id: Date.now(),
+        text: newTodo,
+      };
+      setTodos([...todos, todo]);
+      setNewToDo("");
+    }
+  };
+
+  const removeTodo = (id: number) => {
+    const updatedTodos = todos.filter(todo => todo.id !== id);
+    setTodos(updatedTodos);
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h2>My To-do list</h2>
+      <input type="text" id='myInput' placeholder='Sem napiš svůj úkol!' value={newTodo} onChange={(e) => setNewToDo(e.target.value)} />
+      <button onClick={addTodo}>Přidat</button>
+      <ul id='myUl'>
+        {
+          todos.map((todo) => (
+            <li key={todo.id}>
+              {todo.text}
+              <button onClick={() => removeTodo(todo.id)}>Smazat</button>
+            </li>
+
+          )
+        )
+        }
+      </ul>
     </div>
   );
 }
